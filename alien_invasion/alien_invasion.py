@@ -22,8 +22,15 @@ class AlienInvasion:
         self.bullets = pygame.sprite.Group()
 
     def _fire_bullet(self):
-        new_bullet = Bullet(self)
-        self.bullets.add(new_bullet)
+        if len(self.bullets) < self.settings.bullet_allowed:
+            new_bullet = Bullet(self)
+            self.bullets.add(new_bullet)
+
+    def _update_bullets(self):
+        self.bullets.update()
+        for bullet in self.bullets.copy():
+            if bullet.rect.bottom <= 0:
+                self.bullets.remove(bullet)
 
     def _check_events(self):
         for event in pygame.event.get():
@@ -60,12 +67,9 @@ class AlienInvasion:
     def run_game(self):
         while True:
             self._check_events()
-            self._update_screen()
             self.ship.update()
-            self.bullets.update()
-            for bullet in self.bullets.copy():
-                if bullet.rect.bottom <= 0:
-                    self.bullets.remove(bullet)
+            self._update_bullets()
+            self._update_screen()
             # print(len(self.bullets))
 
 
